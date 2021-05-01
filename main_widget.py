@@ -13,16 +13,16 @@ class MainWidget(QtWidgets.QWidget):
     # TODO: use QtWidgets.MainWindow
     # TODO: move all consts to consts.py or config
     # TODO: refactor
-    def __init__(self, bg_crawler, creds_data_tracker, proxy_data_tracker, parse_data_tracker, parse_speed_tracker):
+    def __init__(self, crawler_with_tracker_state):
         super().__init__()
         layout = QtWidgets.QVBoxLayout()
 
         top_bar = TopBar(height=46)
-        pages_retriever = PagesRetriever(bg_crawler)
-        tabs = Tabs(pages_retriever)
+        pages_retriever = PagesRetriever(crawler_with_tracker_state)
+        self.tabs = Tabs(pages_retriever)
 
         layout.addWidget(top_bar)
-        layout.addWidget(tabs)
+        layout.addWidget(self.tabs)
         self.setLayout(layout)
 
 

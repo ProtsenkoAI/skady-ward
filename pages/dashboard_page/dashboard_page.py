@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtCore
 from typing import List, NamedTuple, Any
 
 from .stats import TextStatsWidget
-from .widget_with_data_tracker import WidgetWithDataTracker
+from .tracker_state_user import TrackerStateUser
 
 Cords = NamedTuple("Cords", [("x", int), ("y", int), ("w", int), ("h", int)])
 Section = NamedTuple("Section", [("widget", QtWidgets.QWidget), ("cords", Cords)])
@@ -14,7 +14,7 @@ class DashboardPage(QtWidgets.QWidget):
         layout = QtWidgets.QGridLayout()
         self.setLayout(layout)
 
-        self.widgets_with_tracker: List[WidgetWithDataTracker] = [speed_report_widget]
+        self.widgets_with_tracker: List[QtWidgets.QWidget] = [speed_report_widget]
 
         layout.addWidget(speed_report_widget, 0, 0, 2, 2)
 
@@ -23,10 +23,10 @@ class DashboardPage(QtWidgets.QWidget):
             layout.addWidget(widget, cords.y, cords.x,
                              cords.h, cords.w)
 
-        timer = QtCore.QTimer()
+        self.timer = QtCore.QTimer()
         self.crawler = crawler
-        timer.timeout.connect(self._update_dashboard())
-        timer.start(1000)
+        self.timer.timeout.connect(self._update_dashboard)
+        self.timer.start(1000)
 
     def _update_dashboard(self):
         new_state = self.crawler.get_tracker_state()

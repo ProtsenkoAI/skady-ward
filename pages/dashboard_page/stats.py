@@ -2,76 +2,98 @@ from PyQt5 import QtWidgets
 from abc import abstractmethod
 from typing import List
 
-from .tracker_state_processors.proxy_report_state_processor import ProxyState
-from .tracker_state_processors.creds_report_state_processor import CredsState
-from .widget_with_data_tracker import WidgetWithDataTracker
+from .tracker_state_user import TrackerStateUser
 from crawler_with_tracker_state import TrackerState
 
 # TODO: setWordWrap to auto-split lines if they are too long
 # TODO: apply listeners/notifiers to track stats
 
-print(type(WidgetWithDataTracker), type(QtWidgets.QGroupBox))
 
-
-class TextStatsWidget(WidgetWithDataTracker, QtWidgets.QGroupBox):
-    def __init__(self, tab_name: str, report_data_processor):
-        self.report_data_processor = report_data_processor
+class TextStatsWidget(TrackerStateUser, QtWidgets.QGroupBox):
+    def __init__(self, tab_name: str):
         QtWidgets.QGroupBox.__init__(self)
 
         self.setTitle(tab_name)
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
 
-        start_state = self.get_start_state()
-        report_lines = self.create_report(start_state)
-        self.line_containers = []
-
-        for line in report_lines:
-            line_cont = QtWidgets.QLabel()
-            line_cont.setText(line)
-            layout.addWidget(line_cont)
-            self.line_containers.append(line_cont)
+        self.line_containers = None
 
     def update_state(self, tracker_state: TrackerState):
-        report_data = self.report_data_processor.process_tracker_state(tracker_state)
-        new_stats_lines = self.create_report(report_data)
+        new_stats_lines = self.create_report(tracker_state)
+        if self.line_containers is None:
+            self._create_line_containers(new_stats_lines)
         for line, line_container in zip(new_stats_lines, self.line_containers):
             line_container.setText(line)
             line_container.update()
 
+    def _create_line_containers(self, report):
+        self.line_containers = []
+
+        for line in report:
+            line_cont = QtWidgets.QLabel()
+            line_cont.setText(line)
+            self.layout().addWidget(line_cont)
+            self.line_containers.append(line_cont)
+
     @abstractmethod
-    def create_report(self, report_data) -> List[str]:
+    def create_report(self, tracker_state: TrackerState) -> List[str]:
         ...
 
 
 class ProxyStats(TextStatsWidget):
-    def __init__(self, report_data_processor):
-        super().__init__(tab_name="Proxy Stats", report_data_processor=report_data_processor)
+    def __init__(self):
+        super().__init__(tab_name="Proxy Stats")
 
-    def create_report(self, report_data: ProxyState) -> List[str]:
-        return [f"{key}: {value}" for key, value in report_data.items()]
+    def create_report(self, report_data: TrackerState) -> List[str]:
+        return self._create_report_using_vars(
+            report_data['working_proxies_cnt'], report_data["used_proxies_cnt"],
+            report_data["cur_session_requests"], report_data["mean_session_lifetime"])
+
+    def _create_report_using_vars(self, work_left, used_cnt: int, cur_requests, lifetime):
+        return [f"Working proxies left: {work_left}",
+                f"Already used proxies: {used_cnt}",
+                f"Made {cur_requests} requests with current proxy",
+                f"Mean proxy lifetime: {lifetime} req"
+               ]
 
 
 class CredsStats(TextStatsWidget):
-    def __init__(self, report_data_processor):
-        super().__init__(tab_name="Creds Stats", report_data_processor=report_data_processor)
+    def __init__(self):
+        super().__init__(tab_name="Creds Stats")
 
-    def create_report(self, report_data: CredsState) -> List[str]:
-        return [f"{key}: {value}" for key, value in report_data.items()]
+    def create_report(self, report_data: TrackerState) -> List[str]:
+        return self._create_report_using_vars(
+            report_data['working_creds_cnt'], report_data["used_creds_cnt"],
+            report_data["cur_session_requests"], report_data["mean_session_lifetime"])
+
+    def _create_report_using_vars(self, work_left, used_cnt: int, cur_requests, lifetime):
+        return [f"Working creds left: {work_left}",
+                f"Already used creds: {used_cnt}",
+                f"Made {cur_requests} requests with current creds",
+                f"Mean creds lifetime: {lifetime} req"
+                ]
 
 
 class ParseStats(TextStatsWidget):
-    def __init__(self, report_data_processor):
-        super().__init__(tab_name="Parse Stats", report_data_processor=report_data_processor)
+    def __init__(self):
+        super().__init__(tab_name="Parse Stats")
 
-    def create_report(self, report_data) -> List[str]:
-        return [f"{key}: {value}" for key, value in report_data.items()]
+    def create_report(self, report_data: TrackerState) -> List[str]:
+        return self._create_report_using_vars(
+            report_data['users_parsed'], report_data["errors_cnt"],
+            report_data["total_groups"])
 
+    def _create_report_using_vars(self, users_parsed, errors_cnt: int, groups_parsed):
+        return [f"Users parsed: {users_parsed}",
+                f"Cnt errors: {errors_cnt}",
+                f"Total groups parsed (not unique) {groups_parsed}"
+                ]
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
 
-    widget = ProxyStats(None)
+    widget = ProxyStats()
     widget.resize(800, 600)
     widget.show()
 

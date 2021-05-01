@@ -1,15 +1,16 @@
-from crawl_runner_mocking import CrawlRunner
+from threading import Thread
 
-TrackerState = dict
+from crawl_runner_mocking import CrawlRunner, EventsTrackerWithState, TrackerState
 
 
-class CrawlerWithTrackerState:
+class BackgroundCrawler:
     def __init__(self, config: dict):
         self.tracker = EventsTrackerWithState()
         self.crawl_runner = CrawlRunner(self.tracker, config)
+        self.run_thread = Thread(target=self.crawl_runner.run)
 
     def run(self):
-        self.crawl_runner.run()
+        self.run_thread.start()
 
     def stop(self):
         self.crawl_runner.stop()
@@ -19,6 +20,3 @@ class CrawlerWithTrackerState:
         return self.tracker.get_state()
 
 
-class EventsTrackerWithState:
-    def get_state(self):
-        return {}

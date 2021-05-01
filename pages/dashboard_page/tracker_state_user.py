@@ -8,7 +8,7 @@ class MetaABCandQWidget(type(ABC), type(QWidget)):
     ...
 
 
-class WidgetWithDataTracker(ABC, metaclass=MetaABCandQWidget):
+class TrackerStateUser(ABC, metaclass=MetaABCandQWidget):
     @abstractmethod
     def update_state(self, tracker_state: TrackerState):
         ...
