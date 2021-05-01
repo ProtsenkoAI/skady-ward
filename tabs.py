@@ -6,13 +6,12 @@ from PyQt5 import QtWidgets
 
 
 class Tabs(QtWidgets.QTabWidget):
-    def __init__(self):
+    def __init__(self, pages_retriever: PagesRetriever):
         super().__init__()
         self.setTabBar(HorizontalTabBar())
         self.setTabPosition(QtWidgets.QTabWidget.West)
 
         # TODO: add icons
-        pages_retriever = PagesRetriever()
         pages, names = pages_retriever.get_pages_and_names()
 
         for page, name in zip(pages, names):

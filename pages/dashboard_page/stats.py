@@ -2,9 +2,10 @@ from PyQt5 import QtWidgets
 from abc import abstractmethod
 from typing import List
 
-from .data_trackers.proxy_data_tracker import ProxyState
-from .data_trackers.creds_data_tracker import CredsState
+from .tracker_state_processors.proxy_report_state_processor import ProxyState
+from .tracker_state_processors.creds_report_state_processor import CredsState
 from .widget_with_data_tracker import WidgetWithDataTracker
+from crawler_with_tracker_state import TrackerState
 
 # TODO: setWordWrap to auto-split lines if they are too long
 # TODO: apply listeners/notifiers to track stats
@@ -12,15 +13,9 @@ from .widget_with_data_tracker import WidgetWithDataTracker
 print(type(WidgetWithDataTracker), type(QtWidgets.QGroupBox))
 
 
-# class MultiMetaClass(type(QtWidgets.QGroupBox), type(WidgetWithDataTracker)):
-#     # TODO: think about it if it'll work at all
-#     ...
-
-
 class TextStatsWidget(WidgetWithDataTracker, QtWidgets.QGroupBox):
-    def __init__(self, tab_name: str, data_tracker):
-
-        WidgetWithDataTracker.__init__(self, data_tracker)
+    def __init__(self, tab_name: str, report_data_processor):
+        self.report_data_processor = report_data_processor
         QtWidgets.QGroupBox.__init__(self)
 
         self.setTitle(tab_name)
@@ -37,39 +32,40 @@ class TextStatsWidget(WidgetWithDataTracker, QtWidgets.QGroupBox):
             layout.addWidget(line_cont)
             self.line_containers.append(line_cont)
 
-    def update_state(self, state):
-        new_stats_lines = self.create_report(state)
+    def update_state(self, tracker_state: TrackerState):
+        report_data = self.report_data_processor.process_tracker_state(tracker_state)
+        new_stats_lines = self.create_report(report_data)
         for line, line_container in zip(new_stats_lines, self.line_containers):
             line_container.setText(line)
             line_container.update()
 
     @abstractmethod
-    def create_report(self, state) -> List[str]:
+    def create_report(self, report_data) -> List[str]:
         ...
 
 
 class ProxyStats(TextStatsWidget):
-    def __init__(self, data_tracker):
-        super().__init__(tab_name="Proxy Stats", data_tracker=data_tracker)
+    def __init__(self, report_data_processor):
+        super().__init__(tab_name="Proxy Stats", report_data_processor=report_data_processor)
 
-    def create_report(self, state: ProxyState) -> List[str]:
-        return [f"{key}: {value}" for key, value in state.items()]
+    def create_report(self, report_data: ProxyState) -> List[str]:
+        return [f"{key}: {value}" for key, value in report_data.items()]
 
 
 class CredsStats(TextStatsWidget):
-    def __init__(self, data_tracker):
-        super().__init__(tab_name="Creds Stats", data_tracker=data_tracker)
+    def __init__(self, report_data_processor):
+        super().__init__(tab_name="Creds Stats", report_data_processor=report_data_processor)
 
-    def create_report(self, state: CredsState) -> List[str]:
-        return [f"{key}: {value}" for key, value in state.items()]
+    def create_report(self, report_data: CredsState) -> List[str]:
+        return [f"{key}: {value}" for key, value in report_data.items()]
 
 
 class ParseStats(TextStatsWidget):
-    def __init__(self, data_tracker):
-        super().__init__(tab_name="Parse Stats", data_tracker=data_tracker)
+    def __init__(self, report_data_processor):
+        super().__init__(tab_name="Parse Stats", report_data_processor=report_data_processor)
 
-    def create_report(self, state) -> List[str]:
-        return [f"{key}: {value}" for key, value in state.items()]
+    def create_report(self, report_data) -> List[str]:
+        return [f"{key}: {value}" for key, value in report_data.items()]
 
 
 if __name__ == "__main__":

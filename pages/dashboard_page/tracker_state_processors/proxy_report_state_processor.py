@@ -1,5 +1,5 @@
 from typing import TypedDict
-from .data_tracker import DataTracker, State
+from .report_state_processor import TrackerStateProcessor, State
 
 
 class ProxyState(TypedDict):
@@ -9,7 +9,7 @@ class ProxyState(TypedDict):
     mean_proxy_lifetime: float
 
 
-class ProxyDataTracker(DataTracker):
+class ProxyReportStateProcessor(TrackerStateProcessor):
     # TODO: add interface
     # TODO: add listeners to get data
     def __init__(self):
@@ -25,6 +25,3 @@ class ProxyDataTracker(DataTracker):
         # TODO: delete
         self.state["curr_session_req_cnt"] += cnt
         self.push_state(self.state)
-
-    def get_start_state(self) -> State:
-        return self.state

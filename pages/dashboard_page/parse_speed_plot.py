@@ -2,15 +2,16 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
+from crawler_with_tracker_state import TrackerState
 from .widget_with_data_tracker import WidgetWithDataTracker
-from .data_trackers.parse_speed_tracker import ParseSpeedState
+from .tracker_state_processors.parsing_speed_report_state_processor import ParseSpeedState
 
 
 class ParseSpeedPlot(WidgetWithDataTracker, QtWidgets.QGroupBox):
     # TODO: refactor
     # TODO: customize x-axis
     def __init__(self, tracker, max_plot_points: int = 10):
-        WidgetWithDataTracker.__init__(self, tracker)
+        self.tracker = tracker
         QtWidgets.QWidget.__init__(self)
 
         layout = QtWidgets.QVBoxLayout()
@@ -32,7 +33,8 @@ class ParseSpeedPlot(WidgetWithDataTracker, QtWidgets.QGroupBox):
 
         self.setStyleSheet("background: white")
 
-    def update_state(self, state: ParseSpeedState):
+    def update_state(self, tracker_state: ParseSpeedState):
+        state = self.tracker.process_tracker_state(tracker_state)
         # TODO: needs huge refactor
         self.parse_speeds = (self.parse_speeds + [state["speed"]])[-self.max_plot_points:]
         xdata = list(range(len(self.parse_speeds)))

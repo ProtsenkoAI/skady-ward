@@ -1,53 +1,28 @@
 import sys
-from PyQt5 import QtWidgets
-
-from pages.dashboard_page.data_trackers import CredsDataTracker
-from top_bar import TopBar
-from tabs import Tabs
-
-
-class App(QtWidgets.QWidget):
-    # TODO: use QtWidgets.MainWindow
-    # TODO: move all consts to consts.py or config
-    def __init__(self):
-        super().__init__()
-        layout = QtWidgets.QVBoxLayout()
-
-        top_bar = TopBar(height=46)
-        tabs = Tabs()
-
-        layout.addWidget(top_bar)
-        layout.addWidget(tabs)
-        self.setLayout(layout)
+from random import randint
+from time import sleep
+from PyQt5 import QtWidgets, QtCore
+from main_app_window import MainWidget
+from pages.dashboard_page.tracker_state_processors import (CredsReportStateProcessor, ProxyReportStateProcessor, ParseProgressReportStateProcessor,
+                                                           ParseSpeedReportStateProcessor)
+from crawler_with_tracker_state import CrawlerWithTrackerState
+import threading
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
+    parse_speed_tracker = ParseSpeedReportStateProcessor()
 
-    # widget = App()
-    from pages.dashboard_page import DashboardPage
-    from time import sleep
-    from random import randint
-    from pages.dashboard_page.stats import ProxyStats, CredsStats, ParseStats
-    from pages.dashboard_page.parse_speed_plot import ParseSpeedPlot
-    from pages.dashboard_page.data_trackers import CredsDataTracker, ProxyDataTracker, ParseSpeedTracker, ParseDataTracker
-    from pages.dashboard_page.data_trackers.parse_speed_tracker import ParseSpeedState
+    qt_app = QtWidgets.QApplication([])
 
-    creds_tracker = CredsDataTracker()
-    proxy_tracker = ProxyDataTracker()
-    parse_tracker = ParseDataTracker()
-    stats_widgets = [
-        ProxyStats(proxy_tracker),
-        CredsStats(creds_tracker),
-        ParseStats(parse_tracker),
-    ]
+    crawler = CrawlerWithTrackerState(config={})
 
-    speed_tracker = ParseSpeedTracker()
-    widget = DashboardPage(ParseSpeedPlot(speed_tracker), stats_widgets)
-    widget.resize(1000, 520)
-    widget.show()
-    for i in range(20):
-        creds_tracker.update_curr_session_req_cnt(5)
-        speed_tracker.push_state(ParseSpeedState(speed=randint(1, 10)))
+    main_widget = MainWidget(crawler,
+                             CredsReportStateProcessor(),
+                             ProxyReportStateProcessor(),
+                             ParseProgressReportStateProcessor(),
+                             parse_speed_tracker)
 
-    sys.exit(app.exec_())
+    main_widget.resize(800, 480)
+    main_widget.show()
+
+    sys.exit(qt_app.exec_())

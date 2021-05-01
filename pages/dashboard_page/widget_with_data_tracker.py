@@ -1,7 +1,7 @@
-from abc import ABC, abstractmethod, ABCMeta
-
-from .data_trackers import DataTracker
+from abc import ABC, abstractmethod
 from PyQt5.QtWidgets import QWidget
+
+from crawler_with_tracker_state import TrackerState
 
 
 class MetaABCandQWidget(type(ABC), type(QWidget)):
@@ -9,13 +9,6 @@ class MetaABCandQWidget(type(ABC), type(QWidget)):
 
 
 class WidgetWithDataTracker(ABC, metaclass=MetaABCandQWidget):
-    def __init__(self, data_tracker: DataTracker):
-        self.data_tracker = data_tracker
-        self.data_tracker.set_callable_to_push_state(self.update_state)
-
     @abstractmethod
-    def update_state(self, state):
+    def update_state(self, tracker_state: TrackerState):
         ...
-
-    def get_start_state(self):
-        return self.data_tracker.get_start_state()
