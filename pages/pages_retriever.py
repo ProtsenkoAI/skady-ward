@@ -1,5 +1,5 @@
 from .dashboard_page import DashboardPage
-from .access_resources_page import AccessResourcesPage
+from .access_resources import AccessResourcesPage
 from .settings_page import SettingsPage
 from pages.dashboard_page.stats import ProxyStats, CredsStats, ParseStats
 from pages.dashboard_page.parse_speed_plot import ParseSpeedPlot
@@ -10,9 +10,9 @@ from PyQt5 import QtWidgets
 
 
 class PagesRetriever:
-    def __init__(self, crawler_with_tracker_state):
+    def __init__(self, crawler_with_tracker_state, creds_list_widget, proxy_list_widget):
         self.pages_with_names = [(self._create_dashboard_page(crawler_with_tracker_state), "Dashboard"),
-                                 (AccessResourcesPage(), "Access Resources"),
+                                 (AccessResourcesPage(creds_list_widget, proxy_list_widget), "Access Resources"),
                                  (SettingsPage(crawler_with_tracker_state), "Settings")
                                  ]
 
