@@ -2,3 +2,4 @@
 resources/
 **/*.pyc
 skady-user-vectorizer/
+**/vk_config*.json
