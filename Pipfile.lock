@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1c7fe8d79cd47393f83fbaeea1fd54c7059ac7c108cc1b5105e4a2abf088bf63"
+            "sha256": "49692e36cbc7fe5a61763c2356aa487ae652724c1ffcdf5e59ea6595199d03eb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -257,6 +257,13 @@
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.15.0"
         },
+        "suvec": {
+            "hashes": [
+                "sha256:7d96c912832390a34107b0ed36ebcb6c19ae0307b466eaee9fa88f18ff29d5e0"
+            ],
+            "path": "./skady-user-vectorizer/dist/suvec-0.0.0-py3-none-any.whl",
+            "version": "==0.0.0"
+        },
         "urllib3": {
             "hashes": [
                 "sha256:2f4da4594db7e1e110a944bb1b551fdf4e6c136ad42e4234131391e21eb5b0df",
@@ -269,7 +276,6 @@
             "hashes": [
                 "sha256:0038ab7562303a57a78cccb48e011f14972c8b599b00396c7cbba9ccc3d38b30"
             ],
-            "index": "pypi",
             "version": "==11.9.3"
         }
     },

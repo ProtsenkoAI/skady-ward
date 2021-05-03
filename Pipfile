@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 pyqt5 = "*"
 matplotlib = "*"
-vk-api = "*"
+suvec = {path = "./skady-user-vectorizer/dist/suvec-0.0.0-py3-none-any.whl"}
 
 [dev-packages]
 

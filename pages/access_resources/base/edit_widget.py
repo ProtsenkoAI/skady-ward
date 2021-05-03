@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from PyQt5 import QtWidgets
 from typing import List, Callable
+from suvec.vk_api_impl.session.records_managing.records_storing import AuthRecordsStorage
 
 from .buttons import SaveButton, CancelButton
 from pages.util import AbstractWidgetMeta
@@ -8,7 +9,7 @@ from pages.util import AbstractWidgetMeta
 
 class ResourceEditWidget(QtWidgets.QDialog, ABC, metaclass=AbstractWidgetMeta):
     # TODO: move to base/ and inherit
-    def __init__(self, record, storage, edit_finish_callback: Callable):
+    def __init__(self, record, storage: AuthRecordsStorage, edit_finish_callback: Callable, delete_if_cancel=False):
         self.record = record
         self.storage = storage
         self.close_callback = edit_finish_callback
@@ -22,7 +23,8 @@ class ResourceEditWidget(QtWidgets.QDialog, ABC, metaclass=AbstractWidgetMeta):
         print("inputs_texts", inputs_texts)
         self.inputs = [QtWidgets.QLineEdit(text=text) for text in inputs_texts]
 
-        layout.addWidget(EditTopBar(record, self.save_record, self._close))
+        close_callback = self._close_and_delete if delete_if_cancel else self._close
+        layout.addWidget(EditTopBar(record, self.save_record, close_callback))
         for name, inp in zip(input_names, self.inputs):
             layout.addWidget(QtWidgets.QLabel(text=name))
             layout.addWidget(inp)
@@ -50,6 +52,10 @@ class ResourceEditWidget(QtWidgets.QDialog, ABC, metaclass=AbstractWidgetMeta):
     def _close(self):
         self.close_callback()
         self.close()
+
+    def _close_and_delete(self):
+        self.storage.delete_record(self.record)
+        self._close()
 
 
 class EditTopBar(QtWidgets.QWidget):

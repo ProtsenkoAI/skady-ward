@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
-from crawler_with_tracker_state import TrackerState
+from background_crawler import TrackerState
 from .tracker_state_user import TrackerStateUser
 
 
@@ -34,21 +34,32 @@ class ParseSpeedPlot(TrackerStateUser, QtWidgets.QGroupBox):
         parse_speeds = (tracker_state["parse_speed"])[-self.max_plot_points:]
 
         if self._plot_ref is None:
-            if len(parse_speeds) >= self.max_plot_points:
-                xdata = list(range(len(parse_speeds)))
-                plot_refs = self.canvas.axes.plot(xdata, parse_speeds, 'r')
-                self._plot_ref = plot_refs[0]
-        else:
+            # if len(parse_speeds) >= self.max_plot_points:
+            xdata = list(range(len(parse_speeds)))
+            plot_refs = self.canvas.axes.plot(xdata, parse_speeds, 'r')
+            self._plot_ref = plot_refs[0]
+        elif len(parse_speeds):
             self.canvas.fig.axes[0].set_ylim(min(parse_speeds) - 1, max(parse_speeds) + 1)
+            self.canvas.fig.axes[0].set_xlim(max(len(parse_speeds) - self.max_plot_points, 0), len(parse_speeds))
             self._plot_ref.set_ydata(parse_speeds)
+            self._plot_ref.set_xdata(self._arange(parse_speeds))
+            # self._plot_ref.set_xdata(self._arange(parse_speeds))
 
-        mean_speed = sum(parse_speeds) / len(parse_speeds)
+        mean_speed = self._mean(parse_speeds)
         mean_speed_formatted = "{:10.4f}".format(mean_speed)
 
         self.current_speed.setText(f"Mean speed: {mean_speed_formatted} requests/sec")
         self.current_speed.update()
 
         self.canvas.draw()
+
+    def _mean(self, lst):
+        if len(lst):
+            return sum(lst) / len(lst)
+        return 0
+
+    def _arange(self, lst):
+        return list(range(len(lst)))
 
 
 class MplCanvas(FigureCanvas):

@@ -9,7 +9,7 @@ Section = NamedTuple("Section", [("widget", QtWidgets.QWidget), ("cords", Cords)
 
 
 class DashboardPage(QtWidgets.QWidget):
-    def __init__(self, crawler, speed_report_widget, stats_widgets: List[TextStatsWidget]):
+    def __init__(self, events_tracker, speed_report_widget, stats_widgets: List[TextStatsWidget]):
         super().__init__()
         layout = QtWidgets.QGridLayout()
         self.setLayout(layout)
@@ -24,12 +24,12 @@ class DashboardPage(QtWidgets.QWidget):
                              cords.h, cords.w)
 
         self.timer = QtCore.QTimer()
-        self.crawler = crawler
+        self.tracker_with_state = events_tracker
         self.timer.timeout.connect(self._update_dashboard)
         self.timer.start(1000)
 
     def _update_dashboard(self):
-        new_state = self.crawler.get_tracker_state()
+        new_state = self.tracker_with_state.get_state()
         for widget in self.widgets_with_tracker:
             widget.update_state(new_state)
 

@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtGui
 from abc import ABC, abstractmethod
 
 from pages.util import AbstractWidgetMeta
-from vk_api_impl.session.records_managing.consts import ResourceStatus, RESOURCE_OK_STATUS
+from suvec.vk_api_impl.session.records_managing.consts import ResourceStatus, RESOURCE_OK_STATUS
 from .buttons import EditButton, DeleteButton
 from .util import qt_color
 

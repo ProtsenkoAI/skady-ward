@@ -3,7 +3,7 @@ from abc import abstractmethod
 from typing import List
 
 from .tracker_state_user import TrackerStateUser
-from crawler_with_tracker_state import TrackerState
+from background_crawler import TrackerState
 
 # TODO: setWordWrap to auto-split lines if they are too long
 # TODO: apply listeners/notifiers to track stats
