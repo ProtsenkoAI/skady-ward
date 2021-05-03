@@ -1,3 +1,0 @@
-class ResourceCreateWidget:
-    """when clicked, displays ResourceEditWidget with empty qlineedit"""
-    ...

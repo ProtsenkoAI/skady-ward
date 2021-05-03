@@ -1,9 +1,13 @@
+# TODO: refactor architecture. Need to reduce number of callbacks
+# TODO: need to test more securely
+
 from PyQt5 import QtWidgets, QtCore
 from typing import List
 
 from .base import ResourcesListWidget
 from .creds import CredsListWidget
 from .proxy import ProxyListWidget
+
 
 class AccessResourcesPage(QtWidgets.QWidget):
     def __init__(self, creds: CredsListWidget, proxies: ProxyListWidget):
@@ -20,7 +24,7 @@ class AccessResourcesPage(QtWidgets.QWidget):
 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self._update_resources)
-        self.timer.start(5000)
+        self.timer.start(2000)
 
     def _update_resources(self):
         for widget in self.resources_list_widgets:
