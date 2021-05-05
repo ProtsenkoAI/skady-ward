@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from PyQt5.QtWidgets import QWidget
 
-from background_crawler import TrackerState
+from suvec.common.events_tracking import TrackerState
 
 
 class MetaABCandQWidget(type(ABC), type(QWidget)):

@@ -1,11 +1,12 @@
+from typing import Callable
+
 from ..base.resource_widget import ResourceWidget
 from ..base.edit_widget import ResourceEditWidget
 
 
 class CredsWidget(ResourceWidget):
-    def edit_callback(self):
-        # TODO: refactor the edit_finished thingy here (inheritor shouldn't know about it)
-        self._edit_widg = CredsEditWidget(self.record, self.storage, self.edit_finished)
+    def edit_callback(self, edit_finish_callback: Callable):
+        self._edit_widg = CredsEditWidget(self.record, self.storage, edit_finish_callback)
         self._edit_widg.show()
 
 

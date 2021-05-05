@@ -2,9 +2,8 @@
 
 from PyQt5 import QtWidgets
 from typing import Optional, Tuple, Callable, Dict, Any
-from suvec.vk_api_impl.crawl_runner import VkApiCrawlRunner
-
-from background_crawler import BackgroundCrawler
+from suvec.vk_api_impl.crawl_runner_with_checkpoints import VkCrawlRunnerWithCheckpoints
+from suvec.common.crawling import BackgroundCrawler
 
 
 class SettingsPage(QtWidgets.QWidget):
@@ -42,13 +41,12 @@ class SettingsPage(QtWidgets.QWidget):
         return res
 
     def _get_input_settings(self):
-        # TODO: split the module and radd returned typing
         # TODO: set standard values from different place
         res = [InputSetting("start_user_id", "Start user id:", "", input_len=100, val_type=int),
                InputSetting("requester_max_requests_per_crawl_loop", "Max requests per crawl iteration:",
-                            "requests", input_len=80, val_type=int, input_text="1000"),
-               InputSetting("save_every_n_users_parsed", "Save data every", "users", input_len=80,
-                            input_text="100", val_type=int),
+                            "requests", input_len=80, val_type=int, input_text="100"),
+               # InputSetting("save_every_n_users_parsed", "Save data every", "users", input_len=80,
+               #              input_text="100", val_type=int),
                InputSetting("session_request_limit", "Max requests per session (proxy/creds)",
                             "requests", input_len=100, val_type=int, input_text="30000"),
                InputSetting("access_resource_reload_hours", "Time between proxy/creds requests limit and its reuse",
@@ -92,10 +90,9 @@ class CrawlOnOffButtons(QtWidgets.QWidget):
         crawler_kwargs.update(self.crawler_init_kwargs)
         crawler_kwargs.update(self.get_crawler_settings())
         print("crawler kwargs", crawler_kwargs)
-        crawler = VkApiCrawlRunner(**crawler_kwargs)
+        crawler = VkCrawlRunnerWithCheckpoints(**crawler_kwargs)
 
-        # TODO: it's dirty code, need to add method get_tracker() to crawler
-        self.crawler = BackgroundCrawler(crawler, crawler_kwargs["events_tracker"])
+        self.crawler = BackgroundCrawler(crawler)
         self.crawler.run()
         self.on_callback()
 

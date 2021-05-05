@@ -1,8 +1,5 @@
-# TODO: split the to base classes and two subdirs: creds/, proxy/
-
 from PyQt5 import QtWidgets, QtGui
 from abc import ABC, abstractmethod
-import time
 
 from pages.util import AbstractWidgetMeta
 
@@ -23,7 +20,7 @@ class ResourcesListWidget(QtWidgets.QWidget, ABC, metaclass=AbstractWidgetMeta):
         header.setFont(font)
 
         layout.addWidget(header)
-        layout.addWidget(self.create_add_new_resource_widget()) # TODO: uncomment
+        layout.addWidget(self.create_add_new_resource_widget())
 
         self.records_widgets = []
         layout.addStretch()

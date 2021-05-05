@@ -8,7 +8,6 @@ from pages.util import AbstractWidgetMeta
 
 
 class ResourceEditWidget(QtWidgets.QDialog, ABC, metaclass=AbstractWidgetMeta):
-    # TODO: move to base/ and inherit
     def __init__(self, record, storage: AuthRecordsStorage, edit_finish_callback: Callable, delete_if_cancel=False):
         self.record = record
         self.storage = storage

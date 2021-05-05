@@ -1,5 +1,6 @@
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets
 from abc import ABC, abstractmethod
+from typing import Callable
 
 from pages.util import AbstractWidgetMeta
 from suvec.vk_api_impl.session.records_managing.consts import ResourceStatus, RESOURCE_OK_STATUS
@@ -8,10 +9,7 @@ from .util import qt_color
 
 
 class ResourceWidget(QtWidgets.QGroupBox, ABC, metaclass=AbstractWidgetMeta):
-    # TODO: change color if status is not ok
     # TODO: maybe add annotations for statuses
-
-    # TODO: add "add new resource" button using abstract method
     def __init__(self, record, storage, width: int = 220):
         super().__init__()
         layout = QtWidgets.QHBoxLayout()
@@ -38,7 +36,7 @@ class ResourceWidget(QtWidgets.QGroupBox, ABC, metaclass=AbstractWidgetMeta):
 
     def _change_edit_flag_call_edit_callback(self):
         self.is_in_edit_mode = True
-        self.edit_callback()
+        self.edit_callback(self.edit_finished)
 
     def edit_finished(self):
         self.is_in_edit_mode = False
@@ -55,5 +53,5 @@ class ResourceWidget(QtWidgets.QGroupBox, ABC, metaclass=AbstractWidgetMeta):
         return self.record.obj_id
 
     @abstractmethod
-    def edit_callback(self):
+    def edit_callback(self, edit_finish_callback: Callable):
         ...

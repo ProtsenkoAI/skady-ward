@@ -3,13 +3,11 @@ from abc import abstractmethod
 from typing import List
 
 from .tracker_state_user import TrackerStateUser
-from background_crawler import TrackerState
-
-# TODO: setWordWrap to auto-split lines if they are too long
-# TODO: apply listeners/notifiers to track stats
+from suvec.common.events_tracking import TrackerState
 
 
 class TextStatsWidget(TrackerStateUser, QtWidgets.QGroupBox):
+    # TODO: setWordWrap to auto-split lines if they are too long
     def __init__(self, tab_name: str):
         QtWidgets.QGroupBox.__init__(self)
 

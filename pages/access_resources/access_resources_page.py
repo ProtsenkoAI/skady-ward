@@ -1,6 +1,3 @@
-# TODO: refactor architecture. Need to reduce number of callbacks
-# TODO: need to test more securely
-
 from PyQt5 import QtWidgets, QtCore
 from typing import List
 

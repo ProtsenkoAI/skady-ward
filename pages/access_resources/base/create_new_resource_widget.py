@@ -28,6 +28,8 @@ class CreateNewResourceWidget(QtWidgets.QGroupBox, ABC, metaclass=AbstractWidget
     def _call_create_record(self):
         self.create_record(self.get_max_record_id() + 1)
 
+
+
     @abstractmethod
     def create_record(self, record_id: int):
         ...

@@ -2,12 +2,11 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
-from background_crawler import TrackerState
+from suvec.common.events_tracking import TrackerState
 from .tracker_state_user import TrackerStateUser
 
 
 class ParseSpeedPlot(TrackerStateUser, QtWidgets.QGroupBox):
-    # TODO: refactor
     # TODO: customize x-axis
     def __init__(self, max_plot_points: int = 100):
         QtWidgets.QWidget.__init__(self)
@@ -30,7 +29,6 @@ class ParseSpeedPlot(TrackerStateUser, QtWidgets.QGroupBox):
         self.setStyleSheet("background: white")
 
     def update_state(self, tracker_state: TrackerState):
-        # TODO: needs huge refactor
         parse_speeds = (tracker_state["parse_speed"])[-self.max_plot_points:]
 
         if self._plot_ref is None:
@@ -43,7 +41,6 @@ class ParseSpeedPlot(TrackerStateUser, QtWidgets.QGroupBox):
             self.canvas.fig.axes[0].set_xlim(max(len(parse_speeds) - self.max_plot_points, 0), len(parse_speeds))
             self._plot_ref.set_ydata(parse_speeds)
             self._plot_ref.set_xdata(self._arange(parse_speeds))
-            # self._plot_ref.set_xdata(self._arange(parse_speeds))
 
         mean_speed = self._mean(parse_speeds)
         mean_speed_formatted = "{:10.4f}".format(mean_speed)
