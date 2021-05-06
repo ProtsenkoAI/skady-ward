@@ -1,8 +1,7 @@
 from PyQt5 import QtWidgets, QtCore
-from typing import List, NamedTuple, Any
+from typing import List, NamedTuple
 
 from .stats import TextStatsWidget
-from .tracker_state_user import TrackerStateUser
 
 Cords = NamedTuple("Cords", [("x", int), ("y", int), ("w", int), ("h", int)])
 Section = NamedTuple("Section", [("widget", QtWidgets.QWidget), ("cords", Cords)])

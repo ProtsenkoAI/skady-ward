@@ -27,7 +27,7 @@ if __name__ == "__main__":
     crawler_kwargs = dict(
         requester_checkpoints_path=os.path.join(base_pth, "checkpoints/requester_checkpoint.json"),
         data_resume_checkpoint_save_pth=os.path.join(base_pth, "checkpoints/data_checkpoint.json"),
-        long_term_save_pth=os.path.join(base_pth, "parsed_data.json")
+        long_term_save_pth=os.path.join(base_pth, "parsed_data.jsonl")
     )
 
     main_widget = MainWidget(events_tracker, proxy_storage, creds_storage,
@@ -37,3 +37,6 @@ if __name__ == "__main__":
     main_widget.show()
 
     sys.exit(qt_app.exec_())
+
+
+

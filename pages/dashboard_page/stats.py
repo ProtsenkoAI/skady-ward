@@ -88,6 +88,7 @@ class ParseStats(TextStatsWidget):
                 f"Total groups parsed (not unique) {groups_parsed}"
                 ]
 
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
 

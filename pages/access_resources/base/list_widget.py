@@ -21,7 +21,6 @@ class ResourcesListWidget(QtWidgets.QWidget, ABC, metaclass=AbstractWidgetMeta):
 
         layout.addWidget(header)
         layout.addWidget(self.create_add_new_resource_widget())
-
         self.records_widgets = []
         layout.addStretch()
         self.reload_resources()  # at the start forcing to draw resources
